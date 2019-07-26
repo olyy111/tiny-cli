@@ -1,0 +1,22 @@
+{
+  "name": "tiny-cli",
+  "version": "1.0.0",
+  "description": "simple react and vue scaffold generator",
+  "bin": {
+    "tiny": "./bin/tiny.js"
+  },
+  "devDependencies": {
+    "commander": "^2.20.0"
+  },
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "glob": "^7.1.4",
+    "handlebars": "^4.1.2",
+    "latest-version": "^5.1.0",
+    "log-symbols": "^3.0.0",
+    "metalsmith": "^2.3.0",
+    "minimatch": "^3.0.4",
+    "ora": "^3.4.0",
+    "rimraf": "^2.6.3"
+  }
+}
