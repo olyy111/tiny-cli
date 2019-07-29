@@ -43,7 +43,7 @@ module.exports = function (metadata = {}, src, dest) {
         done()
       }).build(err => {
         rm(src)
-        err ? reject(err) : resolve()
+        err ? reject(err) : resolve(dest)
       })
   })
 }

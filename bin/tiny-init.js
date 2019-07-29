@@ -27,11 +27,11 @@ let rootName = path.basename(process.cwd())
 
 if (list.length) {
   if (list.filter(name => {
-      const fileName = path.resolve(process.cwd(), path.join('.', name))
+      const fileName = path.resolve(process.cwd(), name)
       const isDir = fs.statSync(fileName).isDirectory()
       return name.indexOf(projectName) !== -1 && isDir
     }).length !== 0) {
-    console.log(`project${projectName} already exists`)
+    console.log(`project${projectName} already exists!!`)
     return
   }
   next = Promise.resolve(projectName)
@@ -39,7 +39,7 @@ if (list.length) {
   next = inquirer.prompt([
     {
       name: 'buildInCurrent',
-      message: '当前目录为空，且目录名称和项目名称相同，是否直接在当前目录下创建新项目？',
+      message: 'The current directory is empty, and the directory name and project name are the same. \nDo you want to create a new project directly in the current directory?',
       type: 'confirm',
       default: true
     }
@@ -58,9 +58,14 @@ function go () {
       fs.mkdirSync(projectRoot)
     }
     
-    const tempDir = './temp22331100__@@##'
+    const tempDir = path.join(projectRoot, './temp')
     if (!fs.existsSync(tempDir)) {
-      fs.mkdirSync(tempDir) 
+      fs.mkdirSync(tempDir)
+    } else {
+      console.log(
+        'directory named .temp have exist, we would use it to save the downloaned files \n' +
+        'please remove it and retry'
+      )
     }
     return download(tempDir).then(target => {
       return {
@@ -93,9 +98,9 @@ function go () {
     })
   }).then(context => {
     return generator(context.metadata, context.downloadTemp, context.root)
-  }).then(() => {
+  }).then((dest) => {
     console.log(logSymbols.success, chalk.green('创建成功'))
-    console.log(chalk.green(`cd ${context.root}`))
+    console.log(chalk.green(`cd ${dest}`))
     console.log(chalk.green(`yarn`))
     console.log(chalk.green(`yarn dev`))
   }).catch(err => {
