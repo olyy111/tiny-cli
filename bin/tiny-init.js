@@ -3,7 +3,7 @@
 const program = require('commander')
 const path = require('path')
 const fs = require('fs')
-const glob = require('glob') // npm i glob -D
+const glob = require('glob')
 const download = require('./lib/download')
 const inquirer = require('inquirer')
 const latestVersion = require('latest-version')
@@ -13,27 +13,25 @@ const logSymbols = require('log-symbols')
 
 program.usage('<project-name>').parse(process.argv)
 
-// 根据输入，获取项目名称
 let projectName = program.args[0]
-console.log()
 
-if (!projectName) {  // project-name 必填
-  // 相当于执行命令的--help选项，显示help信息，这是commander内置的一个命令选项
+
+if (!projectName) {
   program.help() 
   return
 }
 
-const list = glob.sync('*')  // 遍历当前目录
+const list = glob.sync('*')  
 let next = undefined
 let rootName = path.basename(process.cwd())
-console.log(rootName, 11)
-if (list.length) {  // 如果当前目录不为空
+
+if (list.length) {
   if (list.filter(name => {
       const fileName = path.resolve(process.cwd(), path.join('.', name))
       const isDir = fs.statSync(fileName).isDirectory()
       return name.indexOf(projectName) !== -1 && isDir
     }).length !== 0) {
-    console.log(`项目${projectName}已经存在`)
+    console.log(`project${projectName} already exists`)
     return
   }
   next = Promise.resolve(projectName)
@@ -76,19 +74,11 @@ function go () {
     return inquirer.prompt([
       {
         name: 'projectName',
-    	message: '项目的名称',
+    	  message: '项目的名称',
         default: context.name
-      }, {
-        name: 'projectVersion',
-        message: '项目的版本号',
-        default: '1.0.0'
-      }, {
-        name: 'projectDescription',
-        message: '项目的简介',
-        default: `A project named ${context.name}`
       }
     ]).then(answers => {
-      return latestVersion('macaw-ui').then(version => {
+      return latestVersion('tiny-ui').then(version => {
         console.log('version', version)
         answers.supportUiVersion = version
         return {
@@ -102,11 +92,12 @@ function go () {
       })
     })
   }).then(context => {
-    console.log('context', context)
     return generator(context.metadata, context.downloadTemp, context.root)
   }).then(() => {
     console.log(logSymbols.success, chalk.green('创建成功'))
-    console.log(chalk.green('请开始你的表演'))
+    console.log(chalk.green(`cd ${context.root}`))
+    console.log(chalk.green(`yarn`))
+    console.log(chalk.green(`yarn dev`))
   }).catch(err => {
     console.error(logSymbols.error, chalk.red(`创建失败：${err}`))
   })

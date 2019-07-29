@@ -2,7 +2,7 @@ const download = require('download-git-repo')
 const ora = require('ora')
 module.exports = function (target) {
   const url = 'https://github.com/olyy111/webpack-mvvm-structure'
-  const spinner = ora(`正在下载项目模板，源地址：${url}`)
+  const spinner = ora(`downloading template...`)
   spinner.start()
   return new Promise(function (resolve, reject) {
     download(`direct:${url}#master`, target, { clone: true }, function (err) {
@@ -16,3 +16,4 @@ module.exports = function (target) {
     })
   })
 }
+

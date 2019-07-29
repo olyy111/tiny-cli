@@ -7,14 +7,11 @@ const minimatch = require('minimatch')
 
 module.exports = function (metadata = {}, src, dest) {
   if (!src) {
-    return Promise.reject(new Error(`无效的source：${src}`))
+    return Promise.reject(new Error(`invalid source：${src}`))
   }
   return new Promise((resolve, reject) => {
-    //   .destination(dest)
-    // console.log('metalsmish', metadata)
     const ignoreFile = path.join(src, '.templateignore')
-    // console.log(ignoreFile)
-    // console.log('是否存在', fs.existsSync(ignoreFile))
+
     Metalsmith(process.cwd())
       .metadata(metadata)
       .clean(false)
@@ -25,9 +22,8 @@ module.exports = function (metadata = {}, src, dest) {
           const meta = metalsmish.metadata()
           const ignores = Handlebars.compile(fs.readFileSync(ignoreFile).toString())(meta)
             .split('\n').filter(item => !!item.length)
-          console.log('ignoresFiles', ignores)
+          
           Object.keys(files).forEach(fileName => {
-
             ignores.forEach(ignorePattern => {
               if (minimatch(fileName, ignorePattern)) {
                 delete files[fileName]
